@@ -66,45 +66,91 @@ class Clock extends React.Component {
   }
 }
 
-//Incrémenter un chiffre toutes les secondes
+//Incrémenter un chiffre toutes les secondes avec button play/stop
+const Timer = function(props) {
+	return (
+		<h2>
+			Compteur : {props.time}
+		</h2>
+	);
+};
+const Reset = function(props) {
+	return (
+		<button onClick={props.onClickReset} className="reset">
+			Reset
+		</button>
+	);
+};
+
+class Control extends React.Component {
+	constructor(props) {
+		super(props);
+	};
+  
+  onClickHandler = () => {
+    if(this.props.paused){
+      this.props.start();
+    }
+    else{
+      this.props.stop();
+    }
+  }
+  
+	render() {
+		return (
+				<button className={this.props.paused?"paused":""} onClick={this.onClickHandler}>
+		    	{this.props.paused?"Start":"Pause"}
+		    </button>
+		);
+	};
+};
+
 class Incrementer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { n: props.start , stop: false };
-    // this.timer = null;
+    this.state = { timer: 0, paused: true };
   }
 
-  componentDidMount() {
-    this.timer = window.setInterval(() => this.increment(), 1000);
-  }
+  tick = () => {
+    this.setState({ timer: this.state.timer + 1 });
+  };
 
-  componentWillUnmount() {
-    window.clearInterval(this.timer);
-  }
+  startTimer = () => {
+    this.interval = setInterval(this.tick, 1000);
+    this.setState({ paused: false });
+  };
 
-//   increment() {
-//     this.setState((state, props) => ({ n: state.n + props.step }));
-//   }
+  stopTimer = () => {
+    clearInterval(this.interval);
+    this.setState({ paused: true });
+  };
 
-  toggle(){
-    this.setState((state, props) =>
-    setIsActive(!isActive))
-}
+  reset = () => {
+    this.setState({ timer: 0, paused: true });
+    clearInterval(this.interval);
+  };
+
+  
 
   render() {
     return (
       <div>
-        <h2>Compteur : {this.state.n}</h2>
-        <button onClick={this.toggle}>{isActive ? 'Pause' : 'Start'}</button>
+        <Timer time={this.state.timer}/>
+        <Control 
+          paused={this.state.paused} 
+          start={this.startTimer} 
+          stop={this.stopTimer} 
+        />
+        <Reset  onClickReset={this.reset}/>
       </div>
     );
   }
 }
 
-Incrementer.defaultProps = {
-  start: 0,
-  step: 1,
-};
+// Incrementer.defaultProps = {
+//   start: 0,
+//   step: 1,
+// };
 
 // Gestion des événements
 class ManualIncrementer extends React.Component {
@@ -114,8 +160,7 @@ class ManualIncrementer extends React.Component {
   }
 
   handleClick() {
-    this.setState((state, props) => 
-      ({ counter: state.counter + 1 }))    
+    this.setState((state, props) => ({ counter: state.counter + 1 }));
   }
 
   render() {
@@ -143,3 +188,101 @@ function Home() {
 }
 
 ReactDOM.render(<Home />, document.querySelector("#app"));
+
+// Just shows the time, taking app state time as input prop
+// const Timer = function(props) {
+// 	return (
+// 		<h1>
+// 			{props.time}
+// 		</h1>
+// 	);
+// };
+
+// // Resets the timer on click and clear the setInterval
+// const Reset = function(props) {
+// 	return (
+// 		<button onClick={props.onClickReset} className="reset">
+// 			Reset
+// 		</button>
+// 	);
+// };
+
+// // Pause/ play button
+// class Control extends React.Component {
+// 	constructor(props) {
+// 		super(props);
+// 	};
+
+//   onClickHandler = () => {
+//     if(this.props.paused){
+//       this.props.start();
+//     }
+//     else{
+//       this.props.stop();
+//     }
+//   }
+
+// 	render() {
+// 		return (
+// 				<button className={this.props.paused?"paused":""} onClick={this.onClickHandler}>
+// 		    	{this.props.paused?"play":"pause"}
+// 		    </button>
+// 		);
+// 	};
+// };
+
+// class Incrementer extends React.Component {
+// 	constructor(props) {
+// 		super(props);
+// 		this.state = { timer: 0, paused: true };
+// 	};
+
+//   tick = () => {
+//   	this.setState({ timer : this.state.timer + 1 });
+//   }
+
+// 	startTimer = () =>{
+// 		this.interval = setInterval(this.tick,1000);
+//     this.setState({ paused : false });
+// 	}
+
+//   stopTimer = () => {
+//   	clearInterval( this.interval );
+//     this.setState({ paused : true });
+// 	}
+
+//   reset = () => {
+//   	this.setState({ timer : 0, paused: true });
+//     clearInterval( this.interval );
+//   }
+
+// 	render() {
+// 		return (
+// 			<div>
+// 				<Timer time={this.state.timer}  />
+//         <Control
+//           paused={this.state.paused}
+//           start={this.startTimer}
+//           stop={this.stopTimer}
+//         />
+//         <Reset  onClickReset={this.reset}/>
+// 			</div>
+// 		);
+// 	};
+// };
+
+// function Home() {
+//   return (
+//     <div>
+//       {/* <Welcome name="Dorothée" />
+//       <Welcome name="Jean" />
+//       <Clock /> */}
+//       <Incrementer />
+//       {/* <Incrementer start={10} />
+//       <Incrementer start={100} step={10} />
+//       <ManualIncrementer /> */}
+//     </div>
+//   );
+// }
+
+// ReactDOM.render(<Home />, document.querySelector("#app"));
