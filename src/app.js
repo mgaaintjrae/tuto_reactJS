@@ -86,7 +86,7 @@
 // 	constructor(props) {
 // 		super(props);
 // 	};
-  
+
 //   onClickHandler = () => {
 //     if(this.props.paused){
 //       this.props.start();
@@ -95,7 +95,7 @@
 //       this.props.stop();
 //     }
 //   }
-  
+
 // 	render() {
 // 		return (
 // 				<button onClick={this.onClickHandler}>
@@ -130,17 +130,15 @@
 //     clearInterval(this.interval);
 //   };
 
-  
-
 //   render() {
 //     //   console.log('render')
 //     return (
 //       <div>
 //         <Timer time={this.state.timer}/>
-//         <Control 
-//           paused={this.state.paused} 
-//           start={this.startTimer} 
-//           stop={this.stopTimer} 
+//         <Control
+//           paused={this.state.paused}
+//           start={this.startTimer}
+//           stop={this.stopTimer}
 //         />
 //         <Reset onClickReset={this.reset}/>
 //       </div>
@@ -188,50 +186,89 @@
 //   );
 // }
 
-// CREATION D'UN COMPOSANT FIELD
+// CREATION D'UN COMPOSANT FIELD sous forme de Class
 class Field extends React.Component {
-
-
-    render() {
-        const {name, value, onChange, children} = this.props
-        return <div className='form-group'>
-            <label htmlFor={name}>{children}</label>
-            <input type="text" value={value} onChange={onChange} id={name} name={name} className="form-control" />
-            </div>
-    }
+  render() {
+    const { name, value, onChange, children } = this.props;
+    return (
+      <div className="form-group">
+        <label htmlFor={name}>{children}</label>
+        <input
+          type="text"
+          value={value}
+          onChange={onChange}
+          id={name}
+          name={name}
+          className="form-control"
+        />
+      </div>
+    );
+  }
 }
 
+// CREATION D'UN COMPOSANT CHECKBOX sous forme de fonction
+function Checkbox({ name, value, onChange, children }) {
+  return (
+    <div className="form-check">
+        <input
+        type="checkbox"
+        checked={value}
+        onChange={onChange}
+        id={name}
+        name={name}
+        className="form-check-input"
+      />
+      <label htmlFor={name} class="form-check-label">{children}</label>
+      
+    </div>
+  );
+}
 
 // LES FORMULAIRES
 class Home extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      nom: "",
+      prenom: "",
+      newsletter: false,
+    };
+    this.handleChange = this.handleChange.bind(this);
+  }
 
-    constructor (props) {
-        super(props)
-        this.state = {
-            nom: '',
-            prenom: '',
-            newsletter: false
-        }
-        this.handleChange = this.handleChange.bind(this)
-    }
+  handleChange(e) {
+    const name = e.target.name;
+    const type = e.target.type;
+    const value = type === "checkbox" ? e.target.checked : e.target.value;
+    this.setState({
+      [name]: value,
+    });
+  }
 
-    handleChange (e) {
-        const name = e.target.name
-        const type = e.target.type
-        const value = type === 'checkbox' ? e.target.checked : e.target.value
-        this.setState({
-            [name]: value
-        })
-    }
+  render() {
+    console.log("render");
+    return (
+      <div className="container">
+        <Field name="nom" value={this.state.nom} onChange={this.handleChange}>
+          Nom
+        </Field>
+        <Field
+          name="prenom"
+          value={this.state.prenom}
+          onChange={this.handleChange}
+        >
+          Prénom
+        </Field>
+        <Checkbox
+          name="newsletter"
+          value={this.state.newsletter}
+          onChange={this.handleChange}
+        >
+          S'abonner à la newsletter ?
+        </Checkbox>
+        {JSON.stringify(this.state)}
 
-    render () {
-        console.log('render')
-        return <div className="container">
-            <Field name="nom" value={this.state.nom} onChange={this.handleChange}>Nom</Field>
-            <Field name="prenom" value={this.state.prenom} onChange={this.handleChange}>Prénom</Field>
-            {JSON.stringify(this.state)}
-            
-            {/* <div>
+        {/* <div>
                 <label htmlFor="nom">Nom</label>
                 <input type="text" value={this.state.nom} onChange={this.handleChange} id="nom" name="nom"/>
             </div>
@@ -245,11 +282,9 @@ class Home extends React.Component {
             </div>
             <input type="text" defaultValue="Salut"/>
             {JSON.stringify(this.state)} */}
-        </div>
-    }
+      </div>
+    );
+  }
 }
 
-
-
 ReactDOM.render(<Home />, document.querySelector("#app"));
-
