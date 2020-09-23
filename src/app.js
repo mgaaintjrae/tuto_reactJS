@@ -188,6 +188,19 @@
 //   );
 // }
 
+// CREATION D'UN COMPOSANT FIELD
+class Field extends React.Component {
+
+
+    render() {
+        const {name, value, onChange, children} = this.props
+        return <div className='form-group'>
+            <label htmlFor={name}>{children}</label>
+            <input type="text" value={value} onChange={onChange} id={name} name={name} className="form-control" />
+            </div>
+    }
+}
+
 
 // LES FORMULAIRES
 class Home extends React.Component {
@@ -213,8 +226,12 @@ class Home extends React.Component {
 
     render () {
         console.log('render')
-        return <div>
-            <div>
+        return <div className="container">
+            <Field name="nom" value={this.state.nom} onChange={this.handleChange}>Nom</Field>
+            <Field name="prenom" value={this.state.prenom} onChange={this.handleChange}>Prénom</Field>
+            {JSON.stringify(this.state)}
+            
+            {/* <div>
                 <label htmlFor="nom">Nom</label>
                 <input type="text" value={this.state.nom} onChange={this.handleChange} id="nom" name="nom"/>
             </div>
@@ -227,7 +244,7 @@ class Home extends React.Component {
                 <input type="checkbox" value={this.state.newsletter} onChange={this.handleChange} id="newsletter" name="newsletter"/>
             </div>
             <input type="text" defaultValue="Salut"/>
-            {JSON.stringify(this.state)}
+            {JSON.stringify(this.state)} */}
         </div>
     }
 }
