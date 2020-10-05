@@ -23,13 +23,22 @@ function tryConvert(temperature, convert) {
   return rounded.toString();
 }
 
+function Column2({ left, right }) {
+  return (
+    <div className="row">
+      <div className="col-md-6">{left}</div>
+      <div className="col-md-6">{right}</div>
+    </div>
+  );
+}
+
 // Pas d'état (state) une fonction suffit
 function BoilingVerdict(props) {
-    if (props.celsius >= 50) {
-      return <div className="alert alert-danger">L'eau bout.</div>;
-    }
-    return <div className="alert alert-success">L'eau ne bout pas.</div>;
+  if (props.celsius >= 50) {
+    return <div className="alert alert-danger">L'eau bout.</div>;
   }
+  return <div className="alert alert-success">L'eau ne bout pas.</div>;
+}
 
 class TemperatureInput extends React.Component {
   constructor(props) {
@@ -91,16 +100,23 @@ class Calculator extends React.Component {
       scale === "c" ? tryConvert(temperature, toFahrenheit) : temperature;
     return (
       <div>
-        <TemperatureInput
-          scale="c"
-          temperature={celsius}
-          onTemperatureChange={this.handleCelsiusChange}
+        <Column2
+          left={
+            <TemperatureInput
+              scale="c"
+              temperature={celsius}
+              onTemperatureChange={this.handleCelsiusChange}
+            />
+          }
+          right={
+            <TemperatureInput
+              scale="f"
+              temperature={fahrenheit}
+              onTemperatureChange={this.handleFahrenheitChange}
+            />
+          }
         />
-        <TemperatureInput
-          scale="f"
-          temperature={fahrenheit}
-          onTemperatureChange={this.handleFahrenheitChange}
-        />
+
         <BoilingVerdict celsius={parseFloat(celsius)} />
       </div>
     );
